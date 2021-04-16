@@ -45,7 +45,7 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = tokenProvider.createToken(authentication, false);
         
-        User user = userDAO.findByUsername(loginDto.getUsername());
+        User user = userDAO.getUserByUsername(loginDto.getUsername());
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JWTFilter.AUTHORIZATION_HEADER, "Bearer " + jwt);
@@ -56,10 +56,10 @@ public class AuthenticationController {
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public void register(@Valid @RequestBody RegisterUserDTO newUser) {
         try {
-            User user = userDAO.findByUsername(newUser.getUsername());
+            User user = userDAO.getUserByUsername(newUser.getUsername());
             throw new UserAlreadyExistsException();
         } catch (UsernameNotFoundException e) {
-            userDAO.create(newUser.getUsername(),newUser.getPassword(), newUser.getRole());
+            userDAO.createUser(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), newUser.getUsername(),newUser.getPassword(), newUser.getRole());
         }
     }
 

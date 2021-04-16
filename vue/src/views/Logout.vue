@@ -1,12 +1,12 @@
 <template>
-  <h1>Logout</h1>
+    <h1>Logout</h1>
 </template>
 
 <script>
 export default {
-  created() {
-    this.$store.commit("LOGOUT");
-    this.$router.push("/login");
-  }
+    created() {
+        this.$store.commit("LOGOUT");
+        this.$router.push("/login");
+    },
 };
 </script>

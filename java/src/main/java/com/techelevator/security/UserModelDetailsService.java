@@ -32,7 +32,7 @@ public class UserModelDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(final String login) {
         log.debug("Authenticating user '{}'", login);
         String lowercaseLogin = login.toLowerCase();
-        return createSpringSecurityUser(lowercaseLogin,userDAO.findByUsername(lowercaseLogin));
+        return createSpringSecurityUser(lowercaseLogin,userDAO.getUserByUsername(lowercaseLogin));
     }
 
     private org.springframework.security.core.userdetails.User createSpringSecurityUser(String lowercaseLogin, User user) {

@@ -13,18 +13,16 @@ CREATE SEQUENCE seq_user_id
   NO MINVALUE
   CACHE 1;
 
-
 -- create tables
 CREATE TABLE users (
-	user_id int DEFAULT nextval('seq_user_id') NOT NULL,
-	username varchar(50) NOT NULL,
-	password_hash varchar(200) NOT NULL,
-	role varchar(50) NOT NULL,
-	CONSTRAINT PK_user PRIMARY KEY (user_id)
+	user_id INTEGER DEFAULT nextval('seq_user_id') PRIMARY KEY NOT NULL,
+	username VARCHAR(64) NOT NULL,
+	password_hash VARCHAR(200) NOT NULL,
+	role VARCHAR(64) NOT NULL,
+	first_name VARCHAR(64),
+	last_name VARCHAR(64),
+	email VARCHAR(64)
 );
 
-
--- create foreign key constraints
-
-
+-- create foreign key constraints 
 COMMIT TRANSACTION;

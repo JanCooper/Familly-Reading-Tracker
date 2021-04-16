@@ -1,0 +1,94 @@
+.center {
+    text-align: center;
+}
+
+.title {
+    font-size: 3vw;
+    color: #51395c;
+    text-align: center;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.input-line {
+    border-style: none;
+    border-bottom-style: solid;
+    border-color: grey;
+    border-width: 2px;
+    font-size: 1rem;
+    margin: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.button {
+    color: whitesmoke;
+    background: #875f9a;
+    box-shadow: 2px 6px #51395c;
+    font-weight: bold;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    border-radius: 5px;
+    text-align: center;
+    gap: 10px;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px;
+    gap: 10px;
+}
+
+.form {
+    border: 1px solid black;
+    background-color: whitesmoke;
+    box-shadow: 8px 10px #51395c;
+    border-radius: 10px;
+    width: 25%;
+    padding: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form-body input {
+    border-style: none;
+    border-color: gray;
+    background-color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+    font-size: 1rem;
+}
+
+.finished-link {
+    font-size: 1.5vw;
+    padding: 20px;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #51395c;
+}
+
+.book-title a {
+    font-size: 2rem;
+    color: #51395c;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.book-author {
+    font-size: 1rem;
+    color: #51395c;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+}
+
+.dashboard-title {
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 10px;
+    font-size: 3rem;
+}
+
+.dashboard-link {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2rem;
+    color: black;
+}

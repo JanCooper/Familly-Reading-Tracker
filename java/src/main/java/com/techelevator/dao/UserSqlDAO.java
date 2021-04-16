@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.relational.core.sql.IdentifierProcessing;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -22,14 +23,26 @@ public class UserSqlDAO implements UserDAO {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public int getNextUserId() {
+    	return jdbcTemplate.queryForObject("SELECT last_value + 1 FROM seq_user_id", int.class);
+    }
+    
     @Override
-    public int findIdByUsername(String username) {
-        return jdbcTemplate.queryForObject("select user_id from users where username = ?", int.class, username);
+    public int getUserIdByUsername(String username) {
+        return jdbcTemplate.queryForObject("SELECT user_id FROM users WHERE username = ?", int.class, username);
     }
 
 	@Override
 	public User getUserById(Long userId) {
-		String sql = "SELECT * FROM users WHERE user_id = ?";
+		String sql = "SELECT user_id "
+						+ ", username "
+						+ ", password_hash "
+						+ ", role "
+						+ ", first_name "
+						+ ", last_name "
+						+ ", email  "
+					+ "FROM users "
+					+ "WHERE user_id = ?";
 		SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
 		if(results.next()) {
 			return mapRowToUser(results);
@@ -39,50 +52,75 @@ public class UserSqlDAO implements UserDAO {
 	}
 
     @Override
-    public List<User> findAll() {
+    public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-        String sql = "select * from users";
-
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
+		String sql = "SELECT user_id "
+						+ ", username "
+						+ ", password_hash "
+						+ ", role "
+						+ ", first_name "
+						+ ", last_name "
+						+ ", email  "
+					+ "FROM users ";
+		SqlRowSet results = jdbcTemplate.queryForRowSet(sql);
         while(results.next()) {
             User user = mapRowToUser(results);
             users.add(user);
         }
-
         return users;
     }
 
     @Override
-    public User findByUsername(String username) throws UsernameNotFoundException {
-        for (User user : this.findAll()) {
+    public User getUserByUsername(String username) throws UsernameNotFoundException {
+        for (User user : this.getAllUsers()) {
             if( user.getUsername().toLowerCase().equals(username.toLowerCase())) {
                 return user;
             }
         }
         throw new UsernameNotFoundException("User " + username + " was not found.");
+    }    
+    
+    @Override
+    public User getUserByEmail(String email) throws UsernameNotFoundException {
+        for (User user : this.getAllUsers()) {
+            if(user.getEmail() != null && user.getEmail().toLowerCase().equals(email.toLowerCase())) {
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException("User " + email + " was not found.");
+    }
+    @Override
+    public User getUserByFirstName(String firstName) throws UsernameNotFoundException {
+        for (User user : this.getAllUsers()) {
+            if(user.getFirstName() != null && user.getFirstName().toLowerCase().equals(firstName.toLowerCase())) {
+                return user;
+            }
+        }
+        throw new UsernameNotFoundException("User " + firstName + " was not found.");
     }
 
     @Override
-    public boolean create(String username, String password, String role) {
-        boolean userCreated = false;
-
-        // create user
-        String insertUser = "insert into users (username,password_hash,role) values(?,?,?)";
+    public boolean createUser(String firstName, String lastName, String email, String username, String password, String role) {
+        String insertUser = "INSERT INTO users (username, password_hash, role, first_name, last_name, email) VALUES(?,?,?,?,?,?)";
         String password_hash = new BCryptPasswordEncoder().encode(password);
-        String ssRole = "ROLE_" + role.toUpperCase();
+        String ssRole = "ROLE_" + role.toUpperCase();        
 
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        String id_column = "user_id";
+        GeneratedKeyHolder userKeyHolder = new GeneratedKeyHolder();
+        String user_id_column = "user_id";
+        boolean userCreated = false;
+		
         userCreated = jdbcTemplate.update(con -> {
-                    PreparedStatement ps = con.prepareStatement(insertUser, new String[]{id_column});
-                    ps.setString(1, username);
-                    ps.setString(2, password_hash);
-                    ps.setString(3, ssRole);
-                    return ps;
-                }
-                , keyHolder) == 1;
-        int newUserId = (int) keyHolder.getKeys().get(id_column);
-
+			PreparedStatement ps = con.prepareStatement(insertUser, new String[]{user_id_column});
+			ps.setString(1, username);
+			ps.setString(2, password_hash);
+			ps.setString(3, ssRole);
+			ps.setString(4, firstName);
+			ps.setString(5, lastName);
+			ps.setString(6,  email);
+			return ps;
+		}, userKeyHolder) == 1;
+		
+        int newUserId = (int) userKeyHolder.getKeys().get(user_id_column);
         return userCreated;
     }
 
@@ -92,6 +130,9 @@ public class UserSqlDAO implements UserDAO {
         user.setUsername(rs.getString("username"));
         user.setPassword(rs.getString("password_hash"));
         user.setAuthorities(rs.getString("role"));
+        user.setFirstName(rs.getString("first_name"));
+        user.setLastName(rs.getString("last_name"));
+        user.setEmail(rs.getString("email"));
         user.setActivated(true);
         return user;
     }
