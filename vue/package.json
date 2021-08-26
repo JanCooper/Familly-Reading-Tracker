@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "core-js": "^2.6.5",
+    "core-js": "^2.6.12",
     "vue": "^2.6.10",
     "vue-js-modal": "^2.0.0-rc.6",
     "vue-router": "^3.0.3",
