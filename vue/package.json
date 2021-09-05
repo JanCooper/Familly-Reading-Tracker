@@ -10,7 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^0.21.3",
     "core-js": "^2.6.5",
     "vue": "^2.6.10",
     "vue-js-modal": "^2.0.0-rc.6",
